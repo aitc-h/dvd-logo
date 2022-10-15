@@ -1,36 +1,41 @@
+const canvasSize = { x: 1920, y: 1080 };
 var img;
+var icon = {
+  pos: { x: 0, y: 0 },
+  scale: 1,
+  vel: { x: 1, y: 1, scale: 3 },
+}
 
-let iconURL = "https://seeklogo.com/images/D/DVD-logo-6E8849CAC0-seeklogo.com.png"
-let iconScale = 1;
+imageTick = () => {
+  icon.pos = {
+    x: icon.pos.x + icon.vel.x * icon.vel.scale,
+    y: icon.pos.y + icon.vel.y * icon.vel.scale
+  }
 
-let iconPosition = { x: 0, y: 0 };
-let canvasSize = { x: 1920, y: 1080 };
-let velocity = { x: 1, y: 1 }
+  if (icon.pos.x < 0 || icon.pos.x + img.width * icon.scale > windowWidth) {
+    icon.vel.x = -icon.vel.x;
+  }
+  if (icon.pos.y < 0 || icon.pos.y + img.height * icon.scale > windowHeight) {
+    icon.vel.y = -icon.vel.y;
+  }
+}
 
-let velocityScale = 2;
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight)
+}
 
-let iconRadius = 10;
+function preload() {
+  img = loadImage("assets/dvd-logo.png", "DVD Logo");
+}
 
 function setup() {
-  createCanvas(canvasSize.x, canvasSize.y);
-  img = createImg(iconURL, "DVD Logo");
-  img.hide();
+  createCanvas(windowWidth, windowHeight);
+  img.filter(INVERT);
 }
 
 function draw() {
-  background(100);
+  background(0);
 
-  image(img, iconPosition.x, iconPosition.y, img.width * iconScale, img.height * iconScale);
-
-  iconPosition = {
-    x: iconPosition.x + velocity.x * velocityScale,
-    y: iconPosition.y + velocity.y * velocityScale
-  }
-
-  if (iconPosition.x < 0 || iconPosition.x + img.width * iconScale > canvasSize.x) {
-    velocity.x = -velocity.x;
-  }
-  if (iconPosition.y < 0 || iconPosition.y + img.height * iconScale > canvasSize.y) {
-    velocity.y = -velocity.y;
-  }
+  image(img, icon.pos.x, icon.pos.y, img.width * icon.scale, img.height * icon.scale);
+  imageTick();
 }
